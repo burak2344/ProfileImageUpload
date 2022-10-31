@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using ProfileImageUpload.Entities;
+using ProfileImageUpload.Helpers;
 using System.Reflection;
 
 namespace ProfileImageUpload
@@ -32,6 +33,8 @@ namespace ProfileImageUpload
 					opts.LogoutPath = "/Account/Logout";
 					opts.AccessDeniedPath = "/Home/AccessDenied";
 				});
+			builder.Services.AddScoped<IHasher, Hasher>();
+			//builder.Services.AddScoped<ITokenHelper, TokenHelper>();
 
 			var app = builder.Build();
 

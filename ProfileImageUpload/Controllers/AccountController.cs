@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NETCore.Encrypt.Extensions;
 using ProfileImageUpload.Entities;
+using ProfileImageUpload.Helpers;
 using ProfileImageUpload.Models;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
@@ -15,11 +16,13 @@ namespace ProfileImageUpload.Controllers
 	{
 		private readonly DatabaseContext _databaseContext;
 		private readonly IConfiguration _configuration;
+		private readonly IHasher _hasher;
 
-		public AccountController(DatabaseContext databaseContext, IConfiguration configuration)
+		public AccountController(DatabaseContext databaseContext, IConfiguration configuration, IHasher hasher)
 		{
 			_databaseContext = databaseContext;
 			_configuration = configuration;
+			_hasher = hasher;
 		}
 
 		[AllowAnonymous]
@@ -34,7 +37,7 @@ namespace ProfileImageUpload.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-				string hashedPassword = DoMD5HashedString(model.Password);
+				string hashedPassword = _hasher.DoMD5HashedString(model.Password);
 
 				User user = _databaseContext.Users.SingleOrDefault(x => x.Username.ToLower() == model.Username.ToLower() && x.Password == hashedPassword);
 
@@ -69,13 +72,7 @@ namespace ProfileImageUpload.Controllers
 			return View(model);
 		}
 
-		private string DoMD5HashedString(string s)
-		{
-			string md5Salt = _configuration.GetValue<string>("AppSettings:MD5Salt");
-			string salted = s + md5Salt;
-			string hashed = salted.MD5();
-			return hashed;
-		}
+
 
 		[AllowAnonymous]
 		public IActionResult Register()
@@ -95,7 +92,7 @@ namespace ProfileImageUpload.Controllers
 					View(model);
 				}
 
-				string hashedPassword = DoMD5HashedString(model.Password);
+				string hashedPassword = _hasher.DoMD5HashedString(model.Password);
 
 				User user = new()
 				{
@@ -161,7 +158,7 @@ namespace ProfileImageUpload.Controllers
 				Guid userid = new Guid(User.FindFirstValue(ClaimTypes.NameIdentifier));
 				User user = _databaseContext.Users.SingleOrDefault(x => x.Id == userid);
 
-				string hashedPassword = DoMD5HashedString(password);
+				string hashedPassword = _hasher.DoMD5HashedString(password);
 
 				user.Password = hashedPassword;
 				_databaseContext.SaveChanges();

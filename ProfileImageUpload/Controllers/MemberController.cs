@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using ProfileImageUpload.Entities;
+using ProfileImageUpload.Helpers;
 using ProfileImageUpload.Models;
 
 namespace ProfileImageUpload.Controllers
@@ -9,11 +10,13 @@ namespace ProfileImageUpload.Controllers
 	{
 		private readonly DatabaseContext _databaseContext;
 		private readonly IMapper _mapper;
+		private readonly IHasher _hasher;
 
-		public MemberController(DatabaseContext databaseContext, IMapper mapper)
+		public MemberController(DatabaseContext databaseContext, IMapper mapper, IHasher hasher)
 		{
 			_databaseContext = databaseContext;
 			_mapper = mapper;
+			_hasher = hasher;
 		}
 		public IActionResult Index()
 		{
@@ -45,6 +48,7 @@ namespace ProfileImageUpload.Controllers
 				}
 
 				User user = _mapper.Map<User>(model);
+				user.Password = _hasher.DoMD5HashedString(model.Password);
 
 				_databaseContext.Users.Add(user);
 				_databaseContext.SaveChanges();
