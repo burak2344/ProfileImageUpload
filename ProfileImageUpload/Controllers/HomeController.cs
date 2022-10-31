@@ -30,5 +30,18 @@ namespace ProfileImageUpload.Controllers
 		{
 			return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
 		}
+
+		[HttpGet]
+		public IActionResult GetData()
+		{
+			return Json(new { Name = "BUrak", Surname = "Yünkül" });
+		}
+
+		[HttpPost]
+		public IActionResult PostData([FromBody] PostDataApiModel model)
+		{
+			return Json(new { Error = false, Message = "Success" });
+		}
+
 	}
 }
