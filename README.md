@@ -1,4 +1,4 @@
-Part 02 : .NET 6.0 ile ASPNET Core MVC Kodlama
+## Part 02 : .NET 6.0 ile ASPNET Core MVC Kodlama
 
 
 ### Konular;
