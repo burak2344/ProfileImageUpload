@@ -1,11 +1,15 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProfileImageUpload.Entities;
 using ProfileImageUpload.Helpers;
 using ProfileImageUpload.Models;
+using System.Data;
 
 namespace ProfileImageUpload.Controllers
 {
+	[Authorize(Roles = "admin", AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
 	public class UserController : Controller
 	{
 		private readonly DatabaseContext _databaseContext;

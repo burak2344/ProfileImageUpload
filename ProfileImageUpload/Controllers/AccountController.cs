@@ -11,7 +11,7 @@ using System.Security.Claims;
 
 namespace ProfileImageUpload.Controllers
 {
-	[Authorize]
+	[Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
 	public class AccountController : Controller
 	{
 		private readonly DatabaseContext _databaseContext;
